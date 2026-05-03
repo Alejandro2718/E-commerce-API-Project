@@ -59,6 +59,11 @@ def create_order(order: OrderCreate, db: Connection = Depends(get_db)):
 	new_id = cur.lastrowid
 	cur.execute("SELECT * FROM orders WHERE id = ?", (new_id,))
 	row = cur.fetchone()
+	if row is None:
+		raise HTTPException(
+			status_code=500,
+			detail="Order was created but could not be read back",
+		)
 
 	return {
 		"message": "Order created successfully!",

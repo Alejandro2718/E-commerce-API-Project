@@ -8,41 +8,43 @@ DB_PATH = Path(__file__).resolve().parent / "ecommerce.db"
 
 def init_db() -> None:
 	conn = sqlite3.connect(DB_PATH)
-	conn.execute(
-		"""
-		CREATE TABLE IF NOT EXISTS products (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT NOT NULL,
-			kind TEXT NOT NULL,
-			price REAL NOT NULL,
-			quantity INTEGER NOT NULL
+	try:
+		conn.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS products (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				name TEXT NOT NULL,
+				kind TEXT NOT NULL,
+				price REAL NOT NULL,
+				quantity INTEGER NOT NULL
+			)
+			"""
 		)
-		"""
-	)
-	conn.execute(
-		"""
-		CREATE TABLE IF NOT EXISTS orders (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			total_price REAL NOT NULL,
-			customer TEXT NOT NULL,
-			products TEXT NOT NULL
+		conn.execute(
+			"""
+			CREATE TABLE IF NOT EXISTS orders (
+				id INTEGER PRIMARY KEY AUTOINCREMENT,
+				total_price REAL NOT NULL,
+				customer TEXT NOT NULL,
+				products TEXT NOT NULL
+			)
+			"""
 		)
-		"""
-	)
-	cur = conn.cursor()
-	cur.execute("SELECT COUNT(*) FROM products")
-	if cur.fetchone()[0] == 0:
-		cur.executemany(
-			"INSERT INTO products (name, kind, price, quantity) VALUES (?, ?, ?, ?)",
-			[
-				("Auriculares BT", "audio", 49.99, 120),
-				("Teclado mecánico", "periférico", 89.5, 45),
-				("Monitor 24\"", "pantalla", 199.0, 30),
-				("Ratón inalámbrico", "periférico", 24.99, 200),
-			],
-		)
-	conn.commit()
-	conn.close()
+		cur = conn.cursor()
+		cur.execute("SELECT COUNT(*) FROM products")
+		if cur.fetchone()[0] == 0:
+			cur.executemany(
+				"INSERT INTO products (name, kind, price, quantity) VALUES (?, ?, ?, ?)",
+				[
+					("Headbuds BT", "audio", 49.99, 120),
+					("Key board", "device", 89.5, 45),
+					("Screen 24\"", "video", 199.0, 30),
+					("Mouse", "device", 24.99, 200),
+				],
+			)
+		conn.commit()
+	finally:
+		conn.close()
 
 
 def get_db() -> Generator[sqlite3.Connection, None, None]:
