@@ -87,3 +87,21 @@ def get_order(order_id: int, db: Connection = Depends(get_db)):
 	if row is None:
 		raise HTTPException(status_code=404, detail="Order not found")
 	return row_to_order(row)
+
+@app.put("/order/{order_id}")
+def update_order(order_id: int, order: OrderCreate, db: Connection = Depends(get_db)):
+	cur = db.cursor()
+	cur.execute("SELECT * FROM orders WHERE id = ?", (order_id,))
+	row = cur.fetchone()
+	if row is None:
+		raise HTTPException(status_code=404, detail="Order not found")
+	return row_to_order(row)
+
+@app.delete("/order/{order_id}")
+def delete_order(order_id: int, db: Connection = Depends(get_db)):
+	cur = db.cursor()
+	cur.execute("DELETE FROM orders WHERE id = ?", (order_id,))
+	db.commit()
+	if cur.rowcount == 0:
+		raise HTTPException(status_code=404, detail="Order not found")
+	return {"message": "Order deleted successfully"}

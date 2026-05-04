@@ -36,10 +36,7 @@ def init_db() -> None:
 			cur.executemany(
 				"INSERT INTO products (name, kind, price, quantity) VALUES (?, ?, ?, ?)",
 				[
-					("Headbuds BT", "audio", 49.99, 120),
-					("Key board", "device", 89.5, 45),
-					("Screen 24\"", "video", 199.0, 30),
-					("Mouse", "device", 24.99, 200),
+					("Wireless Mouse", "device", 24.99, 200),
 				],
 			)
 		conn.commit()
