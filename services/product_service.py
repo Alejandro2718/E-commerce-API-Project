@@ -1,27 +1,24 @@
-from sqlite3 import Connection
-
 from fastapi import HTTPException
 
-from database import row_to_product
 from schemas import ProductCreate, ProductUpdate
 
 
-def list_products(db: Connection):
+def list_products(db):
 	cur = db.cursor()
 	cur.execute("SELECT * FROM products ORDER BY id")
-	return [row_to_product(r) for r in cur.fetchall()]
+	return [dict(r) for r in cur.fetchall()]
 
 
-def get_product(db: Connection, product_id: int):
+def get_product(db, product_id):
 	cur = db.cursor()
 	cur.execute("SELECT * FROM products WHERE id = ?", (product_id,))
 	row = cur.fetchone()
 	if row is None:
 		raise HTTPException(status_code=404, detail="Product not found")
-	return row_to_product(row)
+	return dict(row)
 
 
-def create_product(db: Connection, product: ProductCreate):
+def create_product(db, product: ProductCreate):
 	cur = db.cursor()
 	cur.execute(
 		"INSERT INTO products (name, kind, price, quantity) VALUES (?, ?, ?, ?)",
@@ -31,7 +28,7 @@ def create_product(db: Connection, product: ProductCreate):
 	return get_product(db, cur.lastrowid)
 
 
-def update_product(db: Connection, product_id: int, product: ProductUpdate):
+def update_product(db, product_id, product: ProductUpdate):
 	existing = get_product(db, product_id)
 	name = product.name if product.name is not None else existing["name"]
 	kind = product.kind if product.kind is not None else existing["kind"]
@@ -47,7 +44,7 @@ def update_product(db: Connection, product_id: int, product: ProductUpdate):
 	return get_product(db, product_id)
 
 
-def delete_product(db: Connection, product_id: int):
+def delete_product(db, product_id):
 	cur = db.cursor()
 	cur.execute("DELETE FROM products WHERE id = ?", (product_id,))
 	db.commit()

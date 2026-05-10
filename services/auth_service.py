@@ -1,35 +1,28 @@
-from sqlite3 import Connection
-
 from fastapi import HTTPException
+from passlib.hash import bcrypt
 
-def _get_user_by_name(db: Connection, name: str):
+
+def register_user(db, name, email, password):
 	cur = db.cursor()
-	cur.execute("SELECT id, name, email, password FROM users WHERE name = ?", (name,))
-	return cur.fetchone()
-
-
-def _get_user_by_email(db: Connection, email: str):
-	cur = db.cursor()
-	cur.execute("SELECT id, name, email, password FROM users WHERE email = ?", (email,))
-	return cur.fetchone()
-
-
-def register_user(db: Connection, name: str, email: str, password: str) -> int:
-	if _get_user_by_name(db, name) is not None:
+	cur.execute("SELECT id FROM users WHERE name = ?", (name,))
+	if cur.fetchone() is not None:
 		raise HTTPException(status_code=400, detail="Username already exists")
-	if _get_user_by_email(db, email) is not None:
+	cur.execute("SELECT id FROM users WHERE email = ?", (email,))
+	if cur.fetchone() is not None:
 		raise HTTPException(status_code=400, detail="Email already exists")
-	cur = db.cursor()
+	hashed = bcrypt.hash(password)
 	cur.execute(
 		"INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-		(name, email, password),
+		(name, email, hashed),
 	)
 	db.commit()
 	return cur.lastrowid
 
 
-def authenticate_user(db: Connection, username: str, password: str) -> bool:
-	user = _get_user_by_name(db, username)
-	if user is None:
+def authenticate_user(db, username, password):
+	cur = db.cursor()
+	cur.execute("SELECT password FROM users WHERE name = ?", (username,))
+	row = cur.fetchone()
+	if row is None:
 		return False
-	return user["password"] == password
+	return bcrypt.verify(password, row["password"])

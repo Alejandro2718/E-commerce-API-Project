@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>E-commerce API</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+			background: #f9f9fa;
+			color: #24292f;
+			max-width: 750px;
+			margin: 40px auto;
+			padding: 32px 24px;
+			border-radius: 10px;
+			box-shadow: 0 2px 18px 0 #0001;
+		}
+		h1 {
+			font-size: 2rem;
+			margin-bottom: 0.3rem;
+			color: #1677c6;
+			letter-spacing: -1px;
+		}
+		h2 {
+			margin-top: 2.2em;
+			font-size: 1.2em;
+			color: #353535;
+			letter-spacing: -0.5px;
+		}
+		a {
+			color: #1877f2;
+			text-decoration: none;
+			border-bottom: 1px dashed #e1e4e8;
+			transition: color .12s;
+		}
+		a:hover {
+			color: #125ea2;
+			border-bottom: 1px solid #1877f2;
+		}
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 0.7em 0 2em 0;
+			background: #fff;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 1px 8px #0002;
+		}
+		th, td {
+			padding: 0.65em 0.9em;
+			text-align: left;
+		}
+		th {
+			background: #f3f7fa;
+			font-weight: 600;
+			color: #193a54;
+			border-bottom: 1.5px solid #e7e7ed;
+		}
+		tr:not(:last-child) td {
+			border-bottom: 1px solid #eee;
+		}
+		tr:hover td {
+			background: #f2faff;
+		}
+		pre {
+			background: #f6f8fa;
+			border-radius: 5px;
+			padding: 12px 16px;
+			font-size: 1em;
+			overflow-x: auto;
+			border: 1px solid #e6e7e9;
+			margin-bottom: 1.2em;
+		}
+		@media (max-width: 650px) {
+			body {
+				max-width: 98vw;
+				padding: 10px 4vw;
+			}
+			table, thead, tbody, th, td, tr {
+				font-size: 0.97em;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h1>Cloud-based E-commerce REST API</h1>
+
+	<p style="margin-top:0.5em;">A simple FastAPI service with products and orders. It uses SQLite for storage and HTTP Basic for login.</p>
+
+	<p style="margin-bottom:2em;">
+		Source code:
+		<a href="https://github.com/Alejandro2718/E-commerce-API-Project" target="_blank" rel="noopener noreferrer">
+			GitHub repo
+		</a>
+	</p>
+
+	<h2>Endpoints</h2>
+	<table>
+		<tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr>
+		<tr><td>POST</td><td>/register</td><td>none</td><td>Register a new user</td></tr>
+		<tr><td>GET</td><td>/me</td><td>basic</td><td>Show current user</td></tr>
+		<tr><td>GET</td><td>/products</td><td>none</td><td>List products</td></tr>
+		<tr><td>GET</td><td>/products/{id}</td><td>none</td><td>Get a product</td></tr>
+		<tr><td>POST</td><td>/products</td><td>none</td><td>Create a product</td></tr>
+		<tr><td>PUT</td><td>/products/{id}</td><td>none</td><td>Update a product</td></tr>
+		<tr><td>DELETE</td><td>/products/{id}</td><td>none</td><td>Delete a product</td></tr>
+		<tr><td>GET</td><td>/orders</td><td>basic</td><td>List orders</td></tr>
+		<tr><td>GET</td><td>/orders/{id}</td><td>basic</td><td>Get an order</td></tr>
+		<tr><td>POST</td><td>/orders</td><td>basic</td><td>Place an order</td></tr>
+		<tr><td>PUT</td><td>/orders/{id}</td><td>basic</td><td>Update an order</td></tr>
+		<tr><td>DELETE</td><td>/orders/{id}</td><td>basic</td><td>Delete an order</td></tr>
+	</table>
+
+	<h2>How to run</h2>
+	<pre>
+git clone https://github.com/Alejandro2718/E-commerce-API-Project.git
+cd E-commerce-API-Project
+pip install -r requirements.txt
+uvicorn main:app --reload
+	</pre>
+
+	<p>
+		Then open
+		<a href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener noreferrer">
+			http://127.0.0.1:8000/docs
+		</a>
+		for the Swagger UI.
+	</p>
+</body>
+</html>

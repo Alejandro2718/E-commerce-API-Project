@@ -15,10 +15,6 @@ class ProductUpdate(BaseModel):
 	quantity: int | None = Field(default=None, gt=0)
 
 
-class ProductOut(ProductCreate):
-	id: int
-
-
 class Customer(BaseModel):
 	name: str = Field(min_length=1, max_length=100)
 	email: str = Field(min_length=1, max_length=100)
@@ -30,27 +26,6 @@ class OrderCreate(BaseModel):
 	product_id: int = Field(gt=0)
 	quantity: int = Field(gt=0)
 	customer: Customer
-
-
-class OrderUpdate(BaseModel):
-	product_id: int = Field(gt=0)
-	quantity: int = Field(gt=0)
-	customer: Customer
-
-
-class OrderProductOut(BaseModel):
-	product_id: int
-	name: str
-	kind: str
-	price: float = Field(gt=0)
-	quantity: int = Field(gt=0)
-
-
-class OrderOut(BaseModel):
-	id: int
-	total_price: float = Field(ge=0)
-	customer: Customer
-	product: OrderProductOut
 
 
 class UserRegister(BaseModel):
