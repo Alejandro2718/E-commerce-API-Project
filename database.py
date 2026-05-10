@@ -1,4 +1,3 @@
-import json
 import sqlite3
 from collections.abc import Generator
 from pathlib import Path
@@ -35,26 +34,41 @@ def init_db() -> None:
 			CREATE TABLE IF NOT EXISTS orders (
 				id INTEGER PRIMARY KEY AUTOINCREMENT,
 				user_id INTEGER NOT NULL,
-				total_price REAL NOT NULL,
-				customer TEXT NOT NULL,
-				products TEXT NOT NULL,
-				FOREIGN KEY (user_id) REFERENCES users (id)
-			)
-			"""
-		)
-		conn.execute(
-			"""
-			CREATE TABLE IF NOT EXISTS order_items (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				order_id INTEGER NOT NULL,
 				product_id INTEGER NOT NULL,
 				quantity INTEGER NOT NULL,
-				FOREIGN KEY (order_id) REFERENCES orders (id),
+				total_price REAL NOT NULL,
+				customer_name TEXT NOT NULL,
+				customer_email TEXT NOT NULL,
+				customer_phone TEXT NOT NULL,
+				customer_address TEXT NOT NULL,
+				FOREIGN KEY (user_id) REFERENCES users (id),
 				FOREIGN KEY (product_id) REFERENCES products (id)
 			)
 			"""
 		)
 		cur = conn.cursor()
+		cur.execute("PRAGMA table_info(orders)")
+		order_columns = [row[1] for row in cur.fetchall()]
+		if "product_id" not in order_columns:
+			conn.execute("DROP TABLE IF EXISTS orders")
+			conn.execute(
+				"""
+				CREATE TABLE orders (
+					id INTEGER PRIMARY KEY AUTOINCREMENT,
+					user_id INTEGER NOT NULL,
+					product_id INTEGER NOT NULL,
+					quantity INTEGER NOT NULL,
+					total_price REAL NOT NULL,
+					customer_name TEXT NOT NULL,
+					customer_email TEXT NOT NULL,
+					customer_phone TEXT NOT NULL,
+					customer_address TEXT NOT NULL,
+					FOREIGN KEY (user_id) REFERENCES users (id),
+					FOREIGN KEY (product_id) REFERENCES products (id)
+				)
+				"""
+			)
+		conn.execute("DROP TABLE IF EXISTS order_items")
 		cur.execute("SELECT COUNT(*) FROM products")
 		if cur.fetchone()[0] == 0:
 			cur.executemany(
@@ -75,15 +89,6 @@ def get_db() -> Generator[sqlite3.Connection, None, None]:
 		yield conn
 	finally:
 		conn.close()
-
-
-def row_to_order(row: sqlite3.Row) -> dict:
-	return {
-		"id": row["id"],
-		"total_price": row["total_price"],
-		"customer": json.loads(row["customer"]),
-		"products": json.loads(row["products"]),
-	}
 
 
 def row_to_product(row: sqlite3.Row) -> dict:
