@@ -4,7 +4,7 @@ A small FastAPI service that exposes a product catalogue and an orders system on
 
 ## Stack
 
-- Python 3.11+
+- Python 3.10+ (uses PEP 604 `X | None` syntax)
 - FastAPI + Uvicorn
 - SQLite (standard library `sqlite3`)
 - Pydantic v2 for input validation
@@ -59,6 +59,26 @@ A small FastAPI service that exposes a product catalogue and an orders system on
    ```
 
 The interactive Swagger UI is available at <http://127.0.0.1:8000/docs>.
+
+## Quick start (Swagger)
+
+The endpoints under `/orders` and `/me` use **HTTP Basic** auth, so the database must contain a user **before** you can call them. Follow these steps in order:
+
+1. Open <http://127.0.0.1:8000/docs>.
+2. Call `POST /register` with a body like:
+
+   ```json
+   {
+     "name": "alice",
+     "email": "alice@example.com",
+     "password": "secret"
+   }
+   ```
+
+3. Click the **Authorize** button (top right) and enter the same credentials (`alice` / `secret`).
+4. You can now call `POST /orders`, `GET /orders`, `GET /me`, etc.
+
+If you try `POST /orders` before registering, you will get a **401 "Bad login or password"** even though Swagger shows you as "Authorized" - that just means it is *sending* credentials, not that the server has validated them.
 
 ## Tests
 
