@@ -124,9 +124,9 @@ Content-Type: application/json
   "quantity": 2,
   "customer": {
     "name": "Alice",
-    "email": "alice@example.com",
+    "email": "alice@gmail.com",
     "phone": "1234567890",
-    "address": "1 Main St"
+    "address": "świętoczeska"
   }
 }
 ```
